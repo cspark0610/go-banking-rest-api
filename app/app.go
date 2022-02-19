@@ -6,10 +6,13 @@ import (
 )
 
 func Start() {
-	// DEFINE ROUTES ENDPOINTS
-	http.HandleFunc("/greet", greet)
-	http.HandleFunc("/customers", getAllCustomers)
+	// DEFINE DEMULTIPLEXER MUX
+	mux := http.NewServeMux()
+
+	// DEFINE ROUTES ENDPOINTS USING DEMULTIPLEXER MUX
+	mux.HandleFunc("/greet", greet)
+	mux.HandleFunc("/customers", getAllCustomers)
 
 	// start server
-	log.Fatal(http.ListenAndServe(":8000", nil))
+	log.Fatal(http.ListenAndServe(":8000", mux))
 }

@@ -1,6 +1,6 @@
 package main
 
-import "app/app"
+import "github.com/cspark0610/go-banking-rest-api/app"
 
 func main() {
 	app.Start()
