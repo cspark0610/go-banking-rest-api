@@ -5,6 +5,8 @@ import (
 	"encoding/xml"
 	"fmt"
 	"net/http"
+
+	"github.com/gorilla/mux"
 )
 
 // struct are ts classes dtos
@@ -41,3 +43,14 @@ func getAllCustomers(w http.ResponseWriter, r *http.Request)  {
 	}
 }
 
+func getAllCustomerById(w http.ResponseWriter, r *http.Request)  {
+	// llamamos a la funcion de mux.Vars para obtener el parametro que se pasa en la url
+	vars:=  mux.Vars(r)
+	fmt.Fprint(w, "Customer ID: "+vars["customer_id"])
+	//vars["customer_id"]
+}
+
+
+func createCustomer(w http.ResponseWriter, r *http.Request ){
+	fmt.Fprintf(w, "Create Customer request received")
+}
