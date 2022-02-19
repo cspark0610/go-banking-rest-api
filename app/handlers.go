@@ -1,4 +1,4 @@
-package main
+package app
 
 import (
 	"encoding/json"
@@ -41,6 +41,3 @@ func getAllCustomers(w http.ResponseWriter, r *http.Request)  {
 	}
 }
 
-func main() {
-	
-}
