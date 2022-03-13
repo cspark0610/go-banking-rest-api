@@ -5,6 +5,7 @@ import (
 	"log"
 	"time"
 
+	"github.com/cspark0610/go-banking-rest-api/errs"
 	_ "github.com/go-sql-driver/mysql"
 )
 
@@ -37,7 +38,7 @@ func (db CustomerRepositoryDb) FindAll() ([]Customer, error) {
 	return customers, nil
 }
 
-func (db CustomerRepositoryDb) ById(id string) (*Customer, error) {
+func (db CustomerRepositoryDb) ById(id string) (*Customer, *errs.AppError) {
 	// make sql sentence
 	findByIdSql := "SELECT customer_id, name, city, zipcode, date_of_birth, status FROM customers WHERE customer_id = ?"
 	// QueryRow method always returns only one row in DB
@@ -45,8 +46,11 @@ func (db CustomerRepositoryDb) ById(id string) (*Customer, error) {
 	var c Customer
 	err := row.Scan(&c.Id, &c.Name, &c.City, &c.ZipCode, &c.DateOfBirth, &c.Status)
 	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, errs.NewNotFoundError("customer not found " + id)
+		} 
 		log.Println("error while scanning customer", err.Error())
-		return nil, err
+		return nil, errs.NewNotFoundError("unexpected db error")
 	}
 	return &c, nil
 }
