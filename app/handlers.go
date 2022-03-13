@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/cspark0610/go-banking-rest-api/service"
 	"github.com/gorilla/mux"
 )
 
@@ -17,40 +18,39 @@ type Customer struct {
 	ZipCode  string  `json:"zip_code"  xml:"zip_code"`
 }
 
+//CustomerHandlers struct va a tener dependencia del service segun el diagrama
+type CustomerHandlers struct {
+	service service.CustomerService
+}
+
 // 1. ROUTE HANDLERS
-func greet(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprint(w, "Hello World")
-}
 
-func getAllCustomers(w http.ResponseWriter, r *http.Request)  {
-	//initalize a slice of customers, a slice is an array objects
-	customers := []Customer{
-		{ Name: "John", City: "New York", ZipCode: "10001"},
-		{ Name: "John", City: "New Jersey", ZipCode: "10002"},
-		{ Name: "John", City: "New Delhi", ZipCode: "10003"},
-		{ Name: "John", City: "New Hampshire", ZipCode: "10004"},
-	}
+func (ch *CustomerHandlers) getAllCustomers(res http.ResponseWriter, req *http.Request)  {
+
+	customers, _ := ch.service.GetAllCustomers()
+	
 	// as content-type text/plain; charset=utf-8, debo setear el Header.content-type a 'application/json' o 'application/xml'
-
 	// si seteo desde el cliente el content-type a 'application/xml' se manda en ese formato
-	// caso contratio se manda en json
-	if r.Header.Get("Content-Type") == "application/xml" {
-		w.Header().Add("Content-Type", "application/xml")
-		xml.NewEncoder(w).Encode(customers)
+	// caso contrario se manda en json
+	if req.Header.Get("Content-Type") == "application/xml" {
+		res.Header().Add("Content-Type", "application/xml")
+		xml.NewEncoder(res).Encode(customers)
 	} else {
-		w.Header().Add("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(customers)
+		res.Header().Add("Content-Type", "application/json")
+		json.NewEncoder(res).Encode(customers)
 	}
 }
 
-func getAllCustomerById(w http.ResponseWriter, r *http.Request)  {
+
+
+func getAllCustomerById(res http.ResponseWriter, req *http.Request)  {
 	// llamamos a la funcion de mux.Vars para obtener el parametro que se pasa en la url
-	vars:=  mux.Vars(r)
-	fmt.Fprint(w, "Customer ID: "+vars["customer_id"])
+	vars:=  mux.Vars(req)
+	fmt.Fprint(res, "Customer ID: "+vars["customer_id"])
 	//vars["customer_id"]
 }
 
 
-func createCustomer(w http.ResponseWriter, r *http.Request ){
-	fmt.Fprintf(w, "Create Customer request received")
+func createCustomer(res http.ResponseWriter, req *http.Request ){
+	fmt.Fprintf(res, "Create Customer request received")
 }
