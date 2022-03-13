@@ -41,15 +41,21 @@ func (ch *CustomerHandlers) getAllCustomers(res http.ResponseWriter, req *http.R
 	}
 }
 
-
-
-func getAllCustomerById(res http.ResponseWriter, req *http.Request)  {
+func (ch *CustomerHandlers) getCustomer(res http.ResponseWriter, req *http.Request)  {
 	// llamamos a la funcion de mux.Vars para obtener el parametro que se pasa en la url
 	vars:=  mux.Vars(req)
-	fmt.Fprint(res, "Customer ID: "+vars["customer_id"])
-	//vars["customer_id"]
-}
+	id := vars["customer_id"]
+	customer, err :=  ch.service.GetCustomer(id)
+	if err != nil {
+		res.WriteHeader(http.StatusNotFound)
+		fmt.Fprint(res, err.Error())
+	} else {
+		// caso exitoso se manda en formato json el customer
+		res.Header().Add("Content-Type", "application/json")
+		json.NewEncoder(res).Encode(customer)
+	}
 
+}
 
 func createCustomer(res http.ResponseWriter, req *http.Request ){
 	fmt.Fprintf(res, "Create Customer request received")

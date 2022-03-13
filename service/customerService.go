@@ -5,6 +5,7 @@ import "github.com/cspark0610/go-banking-rest-api/domain"
 // PRIMARY PORT(interface): el CustomerService Interface
 type CustomerService interface {
 	GetAllCustomers() ([]domain.Customer, error)
+	GetCustomer(string) (*domain.Customer, error)
 }
 
 // implementacion del CustomerService, la llamamos DefaultCustomerService 
@@ -15,6 +16,10 @@ type DefaultCustomerService struct {
 // ADAPTER para el DefaultCustomerService, el cual implementa el CustomerServiceInterface
 func (service DefaultCustomerService) GetAllCustomers() ([]domain.Customer, error) {
 	return service.repo.FindAll()
+}
+
+func (service DefaultCustomerService) GetCustomer(id string) (*domain.Customer, error) {
+	return service.repo.ById(id)
 }
 
 // funcion helper para crear una nueva instancia de CustomerService

@@ -12,4 +12,6 @@ type Customer struct {
 // vamos a definir el SECONDARY PORT(interface): el CustomerRepository Interface
 type CustomerRepository interface{
 	FindAll() ([]Customer, error)
+	// debe retornar un pointer a un customer
+	ById(string) (*Customer, error)
 }
